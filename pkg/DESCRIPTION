@@ -1,0 +1,18 @@
+Package: RSpincalc
+Type: Package
+Title: Package for converting between attitude representations: DCM, Euler angles, Quaternions, and Euler vectors.
+Author: José Gama
+Maintainer: José Gama <jgama@abo.fi>
+Version: 1.0.0
+Encoding: UTF-8
+Authors@R: c(person(given = "José", family = "Gama", role = c("aut","cre"),email = "jgama@abo.fi"),
+    person(given = "John", family = "Fuller", role = c("aut","cph")),
+    person(given = "Paolo", family = "Leva", role = c("aut","cph")),
+    person(given = "Göran", family = "Högnäs", role = "ths"))
+Description: A package for converting between attitude representations: DCM, Euler angles, Quaternions, and Euler vectors.
+    Plus conversion between 2 Euler angle set types (xyx, yzy, zxz, xzx, yxy, zyz, xyz, yzx, zxy, xzy, yxz, zyx).
+    Fully vectorized code, with warnings/errors for Euler angles (singularity, out of range, invalid angle order), 
+    DCM (orthogonality, not proper, excedeed tolerance to unity determinant) and Euler vectors(not unity).
+    Also quaternion and other useful functions.
+    Based on SpinCalc by John Fuller and SpinConv by Paolo de Leva.
+License: GPL (>= 3)
