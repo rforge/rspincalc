@@ -7,7 +7,8 @@ Convert from Euler Angles to Euler Angles
 \code{EA2EA} converts from Euler Angles (EA) to Euler Angles (EA).
 }
 \usage{
-EA2EA(EA, EulerOrder1, EulerOrder2, tol = 10 * .Machine$double.eps, ichk = FALSE, ignoreAllChk = FALSE)
+EA2EA(EA, EulerOrder1, EulerOrder2, tol = 10 * .Machine$double.eps, 
+ichk = FALSE, ignoreAllChk = FALSE)
 }
 \arguments{
   \item{EA}{
@@ -20,7 +21,8 @@ Euler Order 1 (xyx, yzy, zxz, xzx, yxy, zyz, xyz, yzx, zxy, xzy, yxz, zyx)
 Euler Order 2 (xyx, yzy, zxz, xzx, yxy, zyz, xyz, yzx, zxy, xzy, yxz, zyx)
 }
   \item{tol}{
-Tolerance from deviations from unity for the determinant of rotation matrices or the the vector length for unitary vectors.
+Tolerance from deviations from unity for the determinant of rotation matrices 
+or the the vector length for unitary vectors.
 }
   \item{ichk}{
 Logical, FALSE=disables near-singularity warnings.
@@ -45,7 +47,8 @@ Euler Angles (EA) vector [psi, theta, phi].
 }
 \references{
 by John Fuller, 14 Jul 2008
-SpinCalc, Function to Convert between DCM, Euler angles, Quaternions, and Euler vectors.
+SpinCalc, Function to Convert between DCM, Euler angles, Quaternions, and Euler 
+vectors.
 \url{http://www.mathworks.com/matlabcentral/fileexchange/20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors}
 
 Paolo de Leva, 01 May 2013
