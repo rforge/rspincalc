@@ -383,3 +383,95 @@ EA<-Q2EA(Q, EulerOrder, tol, ichk, ignoreAllChk)
 EA
 }
 
+vectQrot<-function( Q, rr )
+# Rotate a vector by a quaternion
+{
+if (!is.matrix(Q)) Q <-matrix(Q,ncol=4,byrow=FALSE)
+if (!is.matrix(rr)) rr <-matrix(rr,ncol=3,byrow=FALSE)
+N <- dim(Q)[1]
+if (!is.matrix(rr)) rr <-matrix(c(0, rr),ncol=4,nrow=N,byrow=FALSE)
+Qr <- (Qconj(Q) %Q*% cbind(0, rr)) %Q*% Q
+Qr[,2:4]
+}
+
+Qrot <- function(Q,w,dT)
+# Updates current attitude quaternion q
+# output - current attitude quaternion
+# input - wx, wy, wz - angular rate values
+# input - dT - inverse of update rate
+{
+if (!is.matrix(Q)) Q <-matrix(Q,ncol=4,byrow=FALSE)
+N <- dim(Q)[1]
+if (!is.matrix(w)) w <-matrix(w,ncol=3,nrow=N,byrow=FALSE)
+Qr <- matrix(0,nrow=N, ncol=4)
+Qr<-vapply(1:N, function(n) {
+Fx <- w[n,1]*dT
+Fy <- w[n,2]*dT
+Fz <- w[n,3]*dT
+Fm <- sqrt(Fx*Fx+Fy*Fy+Fz*Fz)
+sinFm2 <- sin(Fm/2)
+cosFm2 <- cos(Fm/2)
+if (Fm != 0)
+	Qr[n,]<-c(cosFm2, Fx/Fm*sinFm2, Fy/Fm*sinFm2, Fz/Fm*sinFm2)
+else
+    Qr[n,]<-c(1, 0, 0, 0)
+Qr[n,]<- Q[n,] %Q*% Qr[n,]
+},Qr)
+Qr
+}
+
+"%Q+%" <- function(Q1, Q2)
+{# quaternion sum
+if (!is.matrix(Q1)) Q1 <-matrix(Q1,ncol=4,byrow=FALSE)
+if (!is.matrix(Q2)) Q2 <-matrix(Q2,ncol=4,byrow=FALSE)
+Q1 + Q2
+}
+
+"%Q-%" <- function(Q1, Q2)
+{# quaternion difference
+if (!is.matrix(Q1)) Q1 <-matrix(Q1,ncol=4,byrow=FALSE)
+if (!is.matrix(Q2)) Q2 <-matrix(Q2,ncol=4,byrow=FALSE)
+Q1 - Q2
+}
+
+Qconj<-function(Q) 
+{# quaternion conjugate
+if (!is.matrix(Q)) Q <-matrix(Q,ncol=4,byrow=FALSE)
+Q[,2:4] <- -Q[,2:4]
+Q
+}
+
+Qinv<-function(Q)
+{# quaternion inverse
+if (!is.matrix(Q)) Q <-matrix(Q,ncol=4,byrow=FALSE)
+N <- dim(Q)[1]
+if (Qnorm(Q)==1) return (Qconj(Q))
+else return (Qconj(Q)/Qnorm(Q))
+}
+
+"%Q*%" <- function(Q1, Q2)
+{# quaternion product
+if (!is.matrix(Q1)) Q1 <-matrix(Q1,ncol=4,byrow=FALSE)
+if (!is.matrix(Q2)) Q2 <-matrix(Q2,ncol=4,byrow=FALSE)
+N <- dim(Q1)[1]
+ab<-matrix(0,ncol=4,nrow=N)
+ab<-vapply(1:N, function(n) {
+ab[n,1]<-Q1[n,1]*Q2[n,1]-Q1[n,2]*Q2[n,2]-Q1[n,3]*Q2[n,3]-Q1[n,4]*Q2[n,4]
+ab[n,2]<-Q1[n,1]*Q2[n,2]+Q1[n,2]*Q2[n,1]+Q1[n,3]*Q2[n,4]-Q1[n,4]*Q2[n,3]
+ab[n,3]<-Q1[n,1]*Q2[n,3]-Q1[n,2]*Q2[n,4]+Q1[n,3]*Q2[n,1]+Q1[n,4]*Q2[n,2]
+ab[n,4]<-Q1[n,1]*Q2[n,4]+Q1[n,2]*Q2[n,3]-Q1[n,3]*Q2[n,2]+Q1[n,4]*Q2[n,1]
+ab
+}, ab)
+ab<-matrix(ab,ncol=4,nrow=N)
+return(ab)
+}
+
+"%Q/%" <- function(Q1, Q2)
+{# quaternion division
+Q1 %Q*% Qinv(Q2)
+}
+
+Qnorm<-function(Q) sqrt(sum(Q^2)) # norm of a quaternion
+
+Qnormalize<-function(Q) Q/sqrt(sum(Q^2)) # normalize a quaternion
+

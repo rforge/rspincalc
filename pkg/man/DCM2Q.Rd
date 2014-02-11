@@ -25,7 +25,7 @@ Logical, TRUE=disables all warnings and error checks (use with caution!).
 }
 }
 \value{
-Quaternions (Q) vector [q1, q2, q3, q4].
+Quaternion (Q) vector [q1, q2, q3, q4].
 }
 \references{
 by John Fuller, 14 Jul 2008
