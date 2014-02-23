@@ -7,7 +7,7 @@ Convert from Euler Angles to Euler Angles
 \code{EA2EA} converts from Euler Angles (EA) to Euler Angles (EA).
 }
 \usage{
-EA2EA(EA, EulerOrder1, EulerOrder2, tol = 10 * .Machine$double.eps, 
+EA2EA(EA, EulerOrder1='zyx', EulerOrder2='zyx', tol = 10 * .Machine$double.eps, 
 ichk = FALSE, ignoreAllChk = FALSE)
 }
 \arguments{
@@ -62,6 +62,7 @@ Jose Gama
 \code{\link{EA2DCM}}, \code{\link{EA2Q}}, \code{\link{EA2EV}}
 }
 \examples{
+\dontrun{
 EAxyx <- c(-170.6607, 110.937, 136.2344)
 EA2EA(EAxyx,'xyx','xyz')
 EA2EA(EAxyx,'xyx','xzy')
@@ -74,5 +75,6 @@ EA2EA(EAxyx,'xyx','yxy')
 EA2EA(EAxyx,'xyx','yzy')
 EA2EA(EAxyx,'xyx','zxz')
 EA2EA(EAxyx,'xyx','zyz')
+}
 }
 \keyword{ programming }

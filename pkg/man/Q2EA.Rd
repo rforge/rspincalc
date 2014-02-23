@@ -1,13 +1,18 @@
 \name{Q2EA}
 \alias{Q2EA}
+\alias{Q2EA.Xiao}
 \title{
 Convert from rotation Quaternions to Euler Angles
 }
 \description{
-\code{Q2EA} converts from Quaternions (Q) to Euler Angles (EA).
+\code{Q2EA} converts from Quaternions (Q) to Euler Angles (EA) based on D. M.
+Henderson (1977).
+\code{Q2EA.Xiao} is the algorithm by J. Xiao (2013) for the Princeton Vision 
+Toolkit - included here to allow reproducible research.
 }
 \usage{
-Q2EA(Q, EulerOrder, tol = 10 * .Machine$double.eps, ichk = FALSE, ignoreAllChk = FALSE)
+Q2EA(Q, EulerOrder='zyx', tol = 10 * .Machine$double.eps, ichk = FALSE, 
+ignoreAllChk = FALSE)
 }
 \arguments{
   \item{Q}{
@@ -17,7 +22,8 @@ Quaternion (Q) vector [q1, q2, q3, q4].
 Euler Order (xyx, yzy, zxz, xzx, yxy, zyz, xyz, yzx, zxy, xzy, yxz, zyx).
 }
   \item{tol}{
-Tolerance from deviations from unity for the determinant of rotation matrices or the the vector length for unitary vectors.
+Tolerance from deviations from unity for the determinant of rotation matrices 
+or the the vector length for unitary vectors.
 }
   \item{ichk}{
 Logical, FALSE=disables near-singularity warnings.
@@ -41,8 +47,19 @@ Angles about Euler vectors range from 0 to 180 degrees.
 Euler Angles (EA) vector [psi, theta, phi].
 }
 \references{
-by John Fuller, 14 Jul 2008
-SpinCalc, Function to Convert between DCM, Euler angles, Quaternions, and Euler vectors.
+D. M. Henderson, 1977
+Shuttle Program. Euler Angles, Quaternions, and Transformation Matrices Working
+Relationships.
+National Aeronautics and Space Administration (NASA), N77-31234/6
+
+J. Xiao, 2013
+Princeton Vision Toolkit. Available from:
+\url{http://vision.princeton.edu/code.html}
+\url{http://vision.princeton.edu/pvt/GCBreader/quaternion.m}
+
+John Fuller, 14 Jul 2008
+SpinCalc, Function to Convert between DCM, Euler angles, Quaternions, and Euler
+vectors.
 \url{http://www.mathworks.com/matlabcentral/fileexchange/20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors}
 
 Paolo de Leva, 01 May 2013
@@ -56,7 +73,9 @@ Jose Gama
 \code{\link{EA2Q}}
 }
 \examples{
+\dontrun{
 Q <- c(-0.1677489, -0.7369231, -0.3682588, 0.5414703)
 Q2EA(Q,'xyx')
+}
 }
 \keyword{ programming }

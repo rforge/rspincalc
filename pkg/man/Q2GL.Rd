@@ -25,7 +25,7 @@ Python - IMU Brick 2012
 Jose Gama
 }
 \seealso{
-\code{\link{isRotationMatrix}}
+\code{\link{isPureRotationMatrix}}
 }
 \examples{
 Q <- c(-0.1677489, -0.7369231, -0.3682588, 0.5414703)

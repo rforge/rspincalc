@@ -1,7 +1,7 @@
 Package: RSpincalc
 Type: Package
 Title: Package for converting between attitude representations: DCM, Euler angles, Quaternions, and Euler vectors.
-Version: 1.0.0
+Version: 1.0.1
 Encoding: UTF-8
 Authors@R: c(person(given = "José", family = "Gama", role = c("aut","cre"),email = "jgama@abo.fi"),
     person(given = "John", family = "Fuller", role = c("aut","cph")),

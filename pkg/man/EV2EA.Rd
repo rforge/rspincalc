@@ -7,7 +7,8 @@ Convert from Euler Vectors to Euler Angles
 \code{EV2EA} converts from Euler Vectors (EV) to Euler Angles (EA).
 }
 \usage{
-EV2EA(EV, EulerOrder, tol = 10 * .Machine$double.eps, ichk = FALSE, ignoreAllChk = FALSE)
+EV2EA(EV, EulerOrder='zyx', tol = 10 * .Machine$double.eps, ichk = FALSE, 
+ignoreAllChk = FALSE)
 }
 \arguments{
   \item{EV}{
@@ -17,7 +18,8 @@ Euler Vectors (EV) vector [m1, m2, m3, MU].
 Euler Order (xyx, yzy, zxz, xzx, yxy, zyz, xyz, yzx, zxy, xzy, yxz, zyx)
 }
   \item{tol}{
-Tolerance from deviations from unity for the determinant of rotation matrices or the the vector length for unitary vectors.
+Tolerance from deviations from unity for the determinant of rotation matrices 
+or the the vector length for unitary vectors.
 }
   \item{ichk}{
 Logical, FALSE=disables near-singularity warnings.
@@ -42,7 +44,8 @@ Euler Angles (EA) vector [psi, theta, phi].
 }
 \references{
 by John Fuller, 14 Jul 2008
-SpinCalc, Function to Convert between DCM, Euler angles, Quaternions, and Euler vectors.
+SpinCalc, Function to Convert between DCM, Euler angles, Quaternions, and Euler
+vectors.
 \url{http://www.mathworks.com/matlabcentral/fileexchange/20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors}
 
 Paolo de Leva, 01 May 2013
@@ -56,8 +59,9 @@ Jose Gama
 \code{\link{EA2EV}}
 }
 \examples{
-EV <- c(-0.1995301, -0.8765382, -0.4380279, 114.4324)
-EV2EA(EV,'xyx',1e-7)
-#EV2EA(EV,'xyx')
+\dontrun{
+EV <- c(-0.1995301, -0.8765382, -0.4380279, 114.4324 * (pi/180))
+EV2EA(EV,'xyx')
+}
 }
 \keyword{ programming }

@@ -7,7 +7,7 @@ Convert from Euler Angles to rotation Quaternions
 \code{EA2Q} converts from Euler Angles (EA) to Quaternions (Q).
 }
 \usage{
-EA2Q(EA, EulerOrder, ichk = FALSE, ignoreAllChk = FALSE)
+EA2Q(EA, EulerOrder='zyx', ichk = FALSE, ignoreAllChk = FALSE)
 }
 \arguments{
   \item{EA}{
@@ -53,7 +53,7 @@ Jose Gama
 \code{\link{Q2EA}}
 }
 \examples{
-EAxyx <- c(-170.6607, 110.937, 136.2344)
+EAxyx <- c(-170.6607, 110.937, 136.2344) * (pi/180)
 EA2Q(EAxyx,'xyx')
 }
 \keyword{ programming }
