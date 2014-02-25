@@ -39,18 +39,18 @@ if (!is.matrix(EA)) EA <- matrix(EA,ncol=3,byrow=FALSE)
         c13 =cos(Hpsi+Hphi);  s13 =sin(Hpsi+Hphi)
         c1_3=cos(Hpsi-Hphi);  s1_3=sin(Hpsi-Hphi)
         c3_1=cos(Hphi-Hpsi);  s3_1=sin(Hphi-Hpsi)
-        if (EulerOrder=='xyx') Q=cbind(c2*s13,  s2*c1_3, s2*s1_3, c2*c13) else
-        if (EulerOrder=='yzy') Q=cbind(s2*s1_3, c2*s13,  s2*c1_3, c2*c13) else
-        if (EulerOrder=='zxz') Q=cbind(s2*c1_3, s2*s1_3, c2*s13,  c2*c13) else
-        if (EulerOrder=='xzx') Q=cbind(c2*s13,  s2*s3_1, s2*c3_1, c2*c13) else
-        if (EulerOrder=='yxy') Q=cbind(s2*c3_1, c2*s13,  s2*s3_1, c2*c13) else
-        if (EulerOrder=='zyz') Q=cbind(s2*s3_1, s2*c3_1, c2*s13,  c2*c13) else
-        if (EulerOrder=='xyz') Q=cbind(s1*c2*c3+c1*s2*s3, c1*s2*c3-s1*c2*s3, c1*c2*s3+s1*s2*c3, c1*c2*c3-s1*s2*s3) else
-        if (EulerOrder=='yzx') Q=cbind(c1*c2*s3+s1*s2*c3, s1*c2*c3+c1*s2*s3, c1*s2*c3-s1*c2*s3, c1*c2*c3-s1*s2*s3) else
-        if (EulerOrder=='zxy') Q=cbind(c1*s2*c3-s1*c2*s3, c1*c2*s3+s1*s2*c3, s1*c2*c3+c1*s2*s3, c1*c2*c3-s1*s2*s3) else
-        if (EulerOrder=='xzy') Q=cbind(s1*c2*c3-c1*s2*s3, c1*c2*s3-s1*s2*c3, c1*s2*c3+s1*c2*s3, c1*c2*c3+s1*s2*s3) else
-        if (EulerOrder=='yxz') Q=cbind(c1*s2*c3+s1*c2*s3, s1*c2*c3-c1*s2*s3, c1*c2*s3-s1*s2*c3, c1*c2*c3+s1*s2*s3) else
-        if (EulerOrder=='zyx') Q=cbind(c1*c2*s3-s1*s2*c3, c1*s2*c3+s1*c2*s3, s1*c2*c3-c1*s2*s3, c1*c2*c3+s1*s2*s3) else
+        if (EulerOrder=='xyx') Q=cbind(c2*c13, c2*s13,s2*c1_3, s2*s1_3) else
+        if (EulerOrder=='yzy') Q=cbind(c2*c13, s2*s1_3,c2*s13, s2*c1_3) else
+        if (EulerOrder=='zxz') Q=cbind(c2*c13, s2*c1_3,s2*s1_3, c2*s13) else
+        if (EulerOrder=='xzx') Q=cbind(c2*c13, c2*s13,s2*s3_1, s2*c3_1) else
+        if (EulerOrder=='yxy') Q=cbind(c2*c13, s2*c3_1,c2*s13,  s2*s3_1) else
+        if (EulerOrder=='zyz') Q=cbind(c2*c13, s2*s3_1,s2*c3_1, c2*s13) else
+        if (EulerOrder=='xyz') Q=cbind(c1*c2*c3-s1*s2*s3, s1*c2*c3+c1*s2*s3,c1*s2*c3-s1*c2*s3, c1*c2*s3+s1*s2*c3) else
+        if (EulerOrder=='yzx') Q=cbind(c1*c2*c3-s1*s2*s3, c1*c2*s3+s1*s2*c3,s1*c2*c3+c1*s2*s3, c1*s2*c3-s1*c2*s3) else
+        if (EulerOrder=='zxy') Q=cbind(c1*c2*c3-s1*s2*s3, c1*s2*c3-s1*c2*s3,c1*c2*s3+s1*s2*c3, s1*c2*c3+c1*s2*s3) else
+        if (EulerOrder=='xzy') Q=cbind(c1*c2*c3+s1*s2*s3, s1*c2*c3-c1*s2*s3,c1*c2*s3-s1*s2*c3, c1*s2*c3+s1*c2*s3) else
+        if (EulerOrder=='yxz') Q=cbind(c1*c2*c3+s1*s2*s3, c1*s2*c3+s1*c2*s3,s1*c2*c3-c1*s2*s3, c1*c2*s3-s1*s2*c3) else
+        if (EulerOrder=='zyx') Q=cbind(c1*c2*c3+s1*s2*s3, c1*c2*s3-s1*s2*c3,c1*s2*c3+s1*c2*s3, s1*c2*c3-c1*s2*s3) else
         if (!ignoreAllChk) stop('Invalid input Euler angle order')
 Q
 }
@@ -66,7 +66,7 @@ EV2Q <- function(EV,tol = 10 * .Machine$double.eps, ichk=FALSE, ignoreAllChk=FAL
         if (!ignoreAllChk) if (any(abs(delta) > tol)) stop('(At least one of the) input Euler vector(s) is not a unit vector')            
         # Quaternion
         SIN = sin(halfMU) # (N×1)
-        Q = cbind(EVtmp[,1]*SIN, EVtmp[,2]*SIN, EVtmp[,3]*SIN, cos(halfMU))
+        Q = cbind(EVtmp[,2]*SIN, EVtmp[,3]*SIN, cos(halfMU), EVtmp[,1]*SIN)
 Q
 }
 
@@ -76,7 +76,7 @@ DCM2Q <- function(DCM,tol = 10 * .Machine$double.eps, ichk=FALSE, ignoreAllChk=F
         #       DCMs are special orthogonal matrices, with determinant 1
         improper  = FALSE
         DCM_not_1 = FALSE
-        if(is.null(dim(DCM))) stop('DCM must be a matrix or array.')
+        if(any(is.null(dim(DCM)))) stop('DCM must be a matrix or array.')
         if(is.na(dim(DCM)[3]))  N =1 else N = dim(DCM)[3]
         if (N == 1){
             # Computing deviation from orthogonality
@@ -89,13 +89,9 @@ DCM2Q <- function(DCM,tol = 10 * .Machine$double.eps, ichk=FALSE, ignoreAllChk=F
             # Permuting  DCM
              DCM = array( DCM, c(1, 3, 3)) # 1×3×3
         } else {
-        
         delta <- array(0, dim(DCM))
-        
         delta <- vapply(1:N, function(cntDCM) delta[,,cntDCM] <- matrix(DCM[,,cntDCM],3,3) %*% t(matrix(DCM[,,cntDCM],3,3)) - diag(3), delta )
-        
         delta <- c(delta)
-        
 DET = DCM[1,1,]*DCM[2,2,]*DCM[3,3,] -DCM[1,1,]*DCM[2,3,]*DCM[3,2,]+
 DCM[1,2,]*DCM[2,3,]*DCM[3,1,] -DCM[1,2,]*DCM[2,1,]*DCM[3,3,]+
 DCM[1,3,]*DCM[2,1,]*DCM[3,2,] -DCM[1,3,]*DCM[2,2,]*DCM[3,1,]
@@ -104,9 +100,7 @@ DET = array(DET,c(1,1,N)) # 1×1×N
         if (ichk && (any(abs(DET-1)>tol))) DCM_not_1=TRUE 
 DCM2 <- array( 0, c(N, 3, 3))
 DCM2 <- vapply(1:N, function(cntDCM) DCM2[cntDCM,,] <- matrix(DCM[,,cntDCM],3,3), DCM2 )
-
 DCM <- DCM2
-        
         }
         # Issuing error messages or warnings
         if (!ignoreAllChk) if (ichk && any(abs(delta)>tol)) warning('Warning: Input DCM is not orthogonal.')
@@ -115,6 +109,8 @@ DCM <- DCM2
         # Denominators for 4 distinct types of equivalent Q equations
 denom = cbind(1 +  DCM[,1,1] -  DCM[,2,2] -  DCM[,3,3], 1 -  DCM[,1,1] +  DCM[,2,2] -  DCM[,3,3], 
 1 -  DCM[,1,1] -  DCM[,2,2] +  DCM[,3,3], 1 +  DCM[,1,1] +  DCM[,2,2] +  DCM[,3,3])
+#denom[which(is.na(denom))]<-0
+denom[which(denom<0)]<-0
         denom = 2 * sqrt(denom) # N×4
         # Choosing for each DCM the equation which uses largest denominator
         
@@ -156,7 +152,7 @@ denom = cbind(1 +  DCM[,1,1] -  DCM[,2,2] -  DCM[,3,3], 1 -  DCM[,1,1] +  DCM[,2
                        ( DCM[ii,1,2]- DCM[ii,2,1]) / maxdenom[ii,1],
                                                 0.25 * maxdenom[ii])
         }        
-Q
+Q[,c(4,1:3)]
 }
 
 Q2EA <- function(Q, EulerOrder='zyx',tol = 10 * .Machine$double.eps, ichk=FALSE, ignoreAllChk=FALSE)
@@ -404,7 +400,7 @@ N<-dim(Qn)[1]
        DCM[1,3,] = 2*(Qn[1,2,]*Qn[1,4,]-Qn[1,1,]*Qn[1,3,])
        DCM[2,3,] = 2*(Qn[1,3,]*Qn[1,4,]+Qn[1,1,]*Qn[1,2,]) 
        DCM[3,3,] = 1-2*(Qn[1,2,]*Qn[1,2,]+Qn[1,3,]*Qn[1,3,])
-       if (all(dim(DCM)==c(3,3,1))) DCM <- matrix(DCM,3)
+       if (length(dim(DCM))==3) if(all(dim(DCM)==c(3,3,1))) DCM <- matrix(DCM,3)
 DCM
 }
 
@@ -501,7 +497,7 @@ if (!(EulerOrder %in% c('zyx','zxy','yxz','xzy','xyz','yzx','zyz','zxz','yxy','y
 if (!is.matrix(EA)) EA <- matrix(unlist(EA),ncol=3,byrow=FALSE)
 Q<-EA2Q(EA, EulerOrder, ichk, ignoreAllChk)
 DCM<-Q2DCM(Q, tol, ichk, ignoreAllChk)
-if (all(dim(DCM)==c(3,3,1))) DCM <- matrix(DCM,3)
+if (length(DCM)==3) if (all(dim(DCM)==c(3,3,1))) DCM <- matrix(DCM,3)
 DCM
 }
 
@@ -510,7 +506,7 @@ EV2DCM<-function(EV, tol = 10 * .Machine$double.eps, ichk=FALSE, ignoreAllChk=FA
 if (!is.matrix(EV)) EV <- matrix(unlist(EV),ncol=4,byrow=FALSE)
 Q<-EV2Q(EV, tol, ichk, ignoreAllChk)
 DCM<-Q2DCM(Q, tol,  ichk, ignoreAllChk)
-if (all(dim(DCM)==c(3,3,1))) DCM <- matrix(DCM,3)
+if (length(DCM)==3) if (all(dim(DCM)==c(3,3,1))) DCM <- matrix(DCM,3)
 DCM
 }
 
@@ -537,7 +533,7 @@ vectQrot<-function( Q, rr )
 if (!is.matrix(Q)) Q <-matrix(Q,ncol=4,byrow=FALSE)
 if (!is.matrix(rr)) rr <-matrix(rr,ncol=3,byrow=FALSE)
 N <- dim(Q)[1]
-if (!is.matrix(rr)) rr <-matrix(c(0, rr),ncol=4,nrow=N,byrow=FALSE)
+if (!is.matrix(rr)) rr <-matrix( rr,ncol=3,nrow=N,byrow=FALSE)
 Qr <- (Qconj(Q) %Q*% cbind(0, rr)) %Q*% Q
 Qr[,2:4]
 }
@@ -548,11 +544,16 @@ Qrot <- function(Q,w,dT)
 # input - wx, wy, wz - angular rate values
 # input - dT - inverse of update rate
 {
+
+#Q=rbind(Q,Q)
+#w=rbind(w,w)
+
 if (!is.matrix(Q)) Q <-matrix(Q,ncol=4,byrow=FALSE)
 N <- dim(Q)[1]
 if (!is.matrix(w)) w <-matrix(w,ncol=3,byrow=FALSE)#nrow=N,
 Qr <- matrix(0,nrow=N, ncol=4)
 Qr<-vapply(1:N, function(n) {
+#x<-lapply(1:N, function(n) {
 Fx <- w[n,1]*dT
 Fy <- w[n,2]*dT
 Fz <- w[n,3]*dT
@@ -560,11 +561,15 @@ Fm <- sqrt(Fx*Fx+Fy*Fy+Fz*Fz)
 sinFm2 <- sin(Fm/2)
 cosFm2 <- cos(Fm/2)
 if (Fm != 0)
-	Qr[n,]<-c(cosFm2, Fx/Fm*sinFm2, Fy/Fm*sinFm2, Fz/Fm*sinFm2)
+	Qr[n,]<-c(cosFm2, Fx/Fm*sinFm2, Fy/Fm*sinFm2, Fz/Fm*sinFm2)#Qr[n,]
 else
-    Qr[n,]<-c(1, 0, 0, 0)
-Qr[n,]<- Q[n,] %Q*% Qr[n,]
+    Qr[n,]<-c(1, 0, 0, 0)#Qr[n,]
+Qr[n,]<- Q[n,] %Q*% Qr[n,]#Qr[n,]<- Q[n,] %Q*% Qr[n,]
+Qr
+#})
 },Qr)
+if (length(dim(Qr))==3) Qr <- array(Qr,c(N,4))
+#if (length(dim(Qr))==3) if (all(dim(Qr)==c(1,4,1))) Qr <- array(Qr,c(1,4))
 Qr
 }
 
@@ -621,6 +626,7 @@ Q1 %Q*% Qinv(Q2)
 
 Qnorm<-function(Q)
 { # norm of a quaternion
+if (length(Q)==3) Q<-c(0,Q)
 if (!is.matrix(Q)) Q <-matrix(Q,ncol=4,byrow=FALSE)
 N <- dim(Q)[1]
 if (N==1) sqrt(sum(Q^2))
@@ -629,10 +635,12 @@ apply(Q,1,function(n) sqrt(sum(n^2)))
 
 Qnormalize<-function(Q)
 { # normalize a quaternion
+if (length(Q)==3) Q<-c(0,Q)
 if (!is.matrix(Q)) Q <-matrix(Q,ncol=4,byrow=FALSE)
 N <- dim(Q)[1]
-if (N==1) Q/sqrt(sum(Q^2))
-Q/apply(Q,1,function(n) sqrt(sum(n^2)))
+if (N==1) Qn <- Q/sqrt(sum(Q^2)) else Qn <- Q/apply(Q,1,function(n) sqrt(sum(n^2)))
+Qn[which(is.na(Qn))] <- 0
+Qn
 }
 
 #############################################################################################
