@@ -90,7 +90,8 @@ DCM2Q <- function(DCM,tol = 10 * .Machine$double.eps, ichk=FALSE, ignoreAllChk=F
              DCM = array( DCM, c(1, 3, 3)) # 1×3×3
         } else {
         delta <- array(0, dim(DCM))
-        delta <- vapply(1:N, function(cntDCM) delta[,,cntDCM] <- matrix(DCM[,,cntDCM],3,3) %*% t(matrix(DCM[,,cntDCM],3,3)) - diag(3), delta )
+        d=lapply(1:N, function(cntDCM) delta[,,cntDCM] <- t(matrix(DCM[,,cntDCM],3,3) %*% t(matrix(DCM[,,cntDCM],3,3)) - diag(3)))
+        delta <- unlist(d)
         delta <- c(delta)
 DET = DCM[1,1,]*DCM[2,2,]*DCM[3,3,] -DCM[1,1,]*DCM[2,3,]*DCM[3,2,]+
 DCM[1,2,]*DCM[2,3,]*DCM[3,1,] -DCM[1,2,]*DCM[2,1,]*DCM[3,3,]+
@@ -98,9 +99,9 @@ DCM[1,3,]*DCM[2,1,]*DCM[3,2,] -DCM[1,3,]*DCM[2,2,]*DCM[3,1,]
 DET = array(DET,c(1,1,N)) # 1×1×N
         if (any(DET<0)) improper=TRUE
         if (ichk && (any(abs(DET-1)>tol))) DCM_not_1=TRUE 
-DCM2 <- array( 0, c(N, 3, 3))
-DCM2 <- vapply(1:N, function(cntDCM) DCM2[cntDCM,,] <- matrix(DCM[,,cntDCM],3,3), DCM2 )
-DCM <- DCM2
+DCMtmp<-lapply(1:N, function(n) t(DCM[,n,]) ) # it works! but must be turned into an array?
+DCMtmp<-array(unlist(DCMtmp), dim = c(dim(DCMtmp[[1]]), length(DCMtmp))) 
+DCM <- DCMtmp
         }
         # Issuing error messages or warnings
         if (!ignoreAllChk) if (ichk && any(abs(delta)>tol)) warning('Warning: Input DCM is not orthogonal.')
@@ -111,48 +112,29 @@ denom = cbind(1 +  DCM[,1,1] -  DCM[,2,2] -  DCM[,3,3], 1 -  DCM[,1,1] +  DCM[,2
 1 -  DCM[,1,1] -  DCM[,2,2] +  DCM[,3,3], 1 +  DCM[,1,1] +  DCM[,2,2] +  DCM[,3,3])
 #denom[which(is.na(denom))]<-0
 denom[which(denom<0)]<-0
-        denom = 2 * sqrt(denom) # N×4
-        # Choosing for each DCM the equation which uses largest denominator
-        
-        maxdenom <- apply(denom,1,max)
-        index <- apply(denom,1,function(x) which(x==max(x)))
-        #[maxdenom, index] = max(denom, [], 2) # N×1
-       if(is.null(dim(maxdenom))) maxdenom <- matrix(maxdenom,ncol=1)
-
-        Q = matrix(NA,N,4) # N×4
-        # EQUATION 1
-        ii = which(index==1) # (Logical vector)
-        if (length(ii) !=0){
-            Q[ii,] = cbind( 0.25 * maxdenom[ii,1], 
-                       ( DCM[ii,1,2]+ DCM[ii,2,1]) / maxdenom[ii,1],
-                       ( DCM[ii,1,3]+ DCM[ii,3,1]) / maxdenom[ii,1],
-                       ( DCM[ii,2,3]- DCM[ii,3,2]) / maxdenom[ii,1] )
-        }
-        # EQUATION 2
-        ii = which(index==2) # (Logical vector) MAXDENOM==DENOM[:,2]
-        if (length(ii) !=0){
-            Q[ii,] = cbind(( DCM[ii,1,2]+ DCM[ii,2,1]) / maxdenom[ii,1],
-                                                0.25 * maxdenom[ii,1],
-                       ( DCM[ii,2,3]+ DCM[ii,3,2]) / maxdenom[ii,1],
-                       ( DCM[ii,3,1]- DCM[ii,1,3]) / maxdenom[ii,1])
-        }
-        # EQUATION 3
-        ii = which(index==3) # (Logical vector) MAXDENOM==DENOM[:,3]
-        if (length(ii) !=0){
-            Q[ii,] = cbind(( DCM[ii,1,3]+ DCM[ii,3,1]) / maxdenom[ii,1],
-                       ( DCM[ii,2,3]+ DCM[ii,3,2]) / maxdenom[ii,1],
-                                                0.25 * maxdenom[ii,1],
-                       ( DCM[ii,1,2]- DCM[ii,2,1]) / maxdenom[ii,1])
-        }
-        # EQUATION 4
-        ii = which(index==4) # (Logical vector) MAXDENOM==DENOM[:,4]
-        if (length(ii) !=0){
-            Q[ii,] = cbind(( DCM[ii,2,3]- DCM[ii,3,2]) / maxdenom[ii,1],
-                       ( DCM[ii,3,1]- DCM[ii,1,3]) / maxdenom[ii,1],
-                       ( DCM[ii,1,2]- DCM[ii,2,1]) / maxdenom[ii,1],
-                                                0.25 * maxdenom[ii])
-        }        
-Q[,c(4,1:3)]
+denom = 2 * sqrt(denom) # N×4
+# Choosing for each DCM the equation which uses largest denominator
+maxdenom <- apply(denom,1,max)
+index <- apply(denom,1,function(x) which(x==max(x)))
+if(is.null(dim(maxdenom))) maxdenom <- matrix(maxdenom,ncol=1)    
+Q = matrix(NA,N,4) # N×4
+if (N==1){
+  ii=1
+if (index==1) Q <- (cbind( (DCM[ii,2,3]- DCM[ii,3,2]) / maxdenom, 0.25 * maxdenom, ( DCM[ii,1,2]+ DCM[ii,2,1]) / maxdenom,( DCM[ii,1,3]+ DCM[ii,3,1]) / maxdenom) )
+if (index==2) Q <- (cbind( (DCM[ii,3,1]- DCM[ii,1,3]) / maxdenom,( DCM[ii,1,2]+ DCM[ii,2,1]) / maxdenom,0.25 * maxdenom,( DCM[ii,2,3]+ DCM[ii,3,2]) / maxdenom) )
+if (index==3) Q <- (cbind( (DCM[ii,1,2]- DCM[ii,2,1]) / maxdenom,( DCM[ii,1,3]+ DCM[ii,3,1]) / maxdenom,( DCM[ii,2,3]+ DCM[ii,3,2]) / maxdenom,0.25 * maxdenom) )
+if (index==4) Q <- (cbind(0.25 * maxdenom,( DCM[ii,2,3]- DCM[ii,3,2]) / maxdenom,( DCM[ii,3,1]- DCM[ii,1,3]) / maxdenom,( DCM[ii,1,2]- DCM[ii,2,1]) / maxdenom) )
+} else {
+ii = which(index==1) 
+if (length(ii) !=0) Q[ii,] = (cbind( (DCM[ii,2,3]- DCM[ii,3,2]) / maxdenom[ii], 0.25 * maxdenom[ii], ( DCM[ii,1,2]+ DCM[ii,2,1]) / maxdenom[ii],( DCM[ii,1,3]+ DCM[ii,3,1]) / maxdenom[ii]) )
+ii = which(index==2) 
+if (length(ii) !=0) Q[ii,] = (cbind( (DCM[ii,3,1]- DCM[ii,1,3]) / maxdenom[ii],( DCM[ii,1,2]+ DCM[ii,2,1]) / maxdenom[ii],0.25 * maxdenom[ii],( DCM[ii,2,3]+ DCM[ii,3,2]) / maxdenom[ii]) )
+ii = which(index==3) 
+if (length(ii) !=0) Q[ii,] = (cbind( (DCM[ii,1,2]- DCM[ii,2,1]) / maxdenom[ii],( DCM[ii,1,3]+ DCM[ii,3,1]) / maxdenom[ii],( DCM[ii,2,3]+ DCM[ii,3,2]) / maxdenom[ii],0.25 * maxdenom[ii]) )
+ii = which(index==4) 
+if (length(ii) !=0) Q[ii,] = (cbind(0.25 * maxdenom[ii],( DCM[ii,2,3]- DCM[ii,3,2]) / maxdenom[ii],( DCM[ii,3,1]- DCM[ii,1,3]) / maxdenom[ii],( DCM[ii,1,2]- DCM[ii,2,1]) / maxdenom[ii]) )
+}
+Q
 }
 
 Q2EA <- function(Q, EulerOrder='zyx',tol = 10 * .Machine$double.eps, ichk=FALSE, ignoreAllChk=FALSE)
@@ -433,8 +415,7 @@ Q2GL<-function(Q)
 #http://www.tinkerforge.com/doc/Software/Bricks/IMU_Brick_Python.html
 if (!is.matrix(Q)) Q <-matrix(Q,ncol=4,byrow=FALSE)
 N <- dim(Q)[1]
-GL <- array(0,dim=c(4,4,N))
-GL <- vapply(1:N, function(n) 
+GL <- lapply(1:N, function(n) 
 {
 x<-Q[n,1]
 y<-Q[n,2]
@@ -445,9 +426,9 @@ tmp <- c(1 - 2*(y*y + z*z), 2*(x*y - w*z), 2*(x*z + w*y), 0,
  2*(x*z - w*y), 2*(y*z + w*x), 1 - 2*(x*x + y*y), 0,
  0, 0, 0, 1)
 matrix(tmp,nrow=4, ncol=4)
-},GL)
+})
+if (N==1) GL=array(unlist(GL), dim = c(dim(GL[[1]]) )) else GL=array(unlist(GL), dim = c(dim(GL[[1]]), length(GL))) 
 GL
-#GL[,,n] <- 
 }
 
 EV2EA<-function(EV, EulerOrder='zyx',tol = 10 * .Machine$double.eps, ichk=FALSE, ignoreAllChk=FALSE)
@@ -455,7 +436,6 @@ EV2EA<-function(EV, EulerOrder='zyx',tol = 10 * .Machine$double.eps, ichk=FALSE,
 if (!is.character(EulerOrder)) stop('<<EulerOrder>> must be a string.')
 EulerOrder <- tolower(EulerOrder)
 if (!(EulerOrder %in% c('zyx','zxy','yxz','xzy','xyz','yzx','zyz','zxz','yxy','yzy','xyx','xzx'))) stop('Invalid input Euler angle order')
-
 if (!is.matrix(EV)) EV <- matrix(unlist(EV),ncol=4,byrow=FALSE)
 Q<-EV2Q(EV, tol, ichk, ignoreAllChk)
 EA<-Q2EA(Q, EulerOrder, tol, ichk, ignoreAllChk)
@@ -467,7 +447,6 @@ EA2EV<-function(EA, EulerOrder='zyx',tol = 10 * .Machine$double.eps, ichk=FALSE,
 if (!is.character(EulerOrder)) stop('<<EulerOrder>> must be a string.')
 EulerOrder <- tolower(EulerOrder)
 if (!(EulerOrder %in% c('zyx','zxy','yxz','xzy','xyz','yzx','zyz','zxz','yxy','yzy','xyx','xzx'))) stop('Invalid input Euler angle order')
-
 if (!is.matrix(EA)) EA <- matrix(unlist(EA),ncol=3,byrow=FALSE)
 Q<-EA2Q(EA, EulerOrder, ichk, ignoreAllChk)
 EV<-Q2EV(Q, tol, ichk, ignoreAllChk)
@@ -544,16 +523,11 @@ Qrot <- function(Q,w,dT)
 # input - wx, wy, wz - angular rate values
 # input - dT - inverse of update rate
 {
-
-#Q=rbind(Q,Q)
-#w=rbind(w,w)
-
 if (!is.matrix(Q)) Q <-matrix(Q,ncol=4,byrow=FALSE)
 N <- dim(Q)[1]
 if (!is.matrix(w)) w <-matrix(w,ncol=3,byrow=FALSE)#nrow=N,
 Qr <- matrix(0,nrow=N, ncol=4)
-Qr<-vapply(1:N, function(n) {
-#x<-lapply(1:N, function(n) {
+Qr<-lapply(1:N, function(n) {
 Fx <- w[n,1]*dT
 Fy <- w[n,2]*dT
 Fz <- w[n,3]*dT
@@ -566,8 +540,8 @@ else
     Qr[n,]<-c(1, 0, 0, 0)#Qr[n,]
 Qr[n,]<- Q[n,] %Q*% Qr[n,]#Qr[n,]<- Q[n,] %Q*% Qr[n,]
 Qr
-#})
-},Qr)
+})
+if (N==1) Qr=array(unlist(Qr), dim = c(dim(Qr[[1]]) )) else Qr=array(unlist(Qr), dim = c(dim(Qr[[1]]), length(Qr))) 
 if (length(dim(Qr))==3) Qr <- array(Qr,c(N,4))
 #if (length(dim(Qr))==3) if (all(dim(Qr)==c(1,4,1))) Qr <- array(Qr,c(1,4))
 Qr
@@ -608,13 +582,14 @@ if (!is.matrix(Q1)) Q1 <-matrix(Q1,ncol=4,byrow=FALSE)
 if (!is.matrix(Q2)) Q2 <-matrix(Q2,ncol=4,byrow=FALSE)
 N <- dim(Q1)[1]
 ab<-matrix(0,ncol=4,nrow=N)
-ab<-vapply(1:N, function(n) {
+ab<-lapply(1:N, function(n) {
 ab[n,1]<-Q1[n,1]*Q2[n,1]-Q1[n,2]*Q2[n,2]-Q1[n,3]*Q2[n,3]-Q1[n,4]*Q2[n,4]
 ab[n,2]<-Q1[n,1]*Q2[n,2]+Q1[n,2]*Q2[n,1]+Q1[n,3]*Q2[n,4]-Q1[n,4]*Q2[n,3]
 ab[n,3]<-Q1[n,1]*Q2[n,3]-Q1[n,2]*Q2[n,4]+Q1[n,3]*Q2[n,1]+Q1[n,4]*Q2[n,2]
 ab[n,4]<-Q1[n,1]*Q2[n,4]+Q1[n,2]*Q2[n,3]-Q1[n,3]*Q2[n,2]+Q1[n,4]*Q2[n,1]
 ab
-}, ab)
+} )
+if (N==1) ab=array(unlist(ab), dim = c(dim(ab[[1]]) )) else ab=array(unlist(ab), dim = c(dim(ab[[1]]), length(ab))) 
 ab<-matrix(ab,ncol=4,nrow=N)
 return(ab)
 }
