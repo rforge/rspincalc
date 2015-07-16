@@ -29,7 +29,7 @@ Quaternions (Q) vector [q1, q2, q3, q4].
 \references{
 by John Fuller, 14 Jul 2008
 SpinCalc, Function to Convert between DCM, Euler angles, Quaternions, and Euler vectors.
-\url{http://www.mathworks.com/matlabcentral/fileexchange/20696-function-to-convert-between-dcm-euler-angles-quaternions-and-euler-vectors}
+\url{http://www.mathworks.com/matlabcentral/fileexchange/20696-function-to-convert-between-dcm--euler-angles--quaternions--and-euler-vectors}
 
 Paolo de Leva, 01 May 2013
 SpinConv, Conversion from a rotation representation type to another.
