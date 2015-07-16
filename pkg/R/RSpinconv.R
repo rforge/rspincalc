@@ -771,7 +771,7 @@ Qrandom <- function(n=NA)
 # LaValle, Steven M. "Planning algorithms." University of Illinois 2004 (1999).
 # pp. 164 - "uniform random unit quaternions leads to uniform random samples over SO(3)"
 if (is.na(n)) n <- 1
-R <- matrix(runif(n*3),n,3)
+R <- matrix(stats::runif(n*3),n,3)
 r1 <- sqrt(1.0 - R[,1])
 r2 <- sqrt(R[,1])
 pi2 <- pi * 2.0

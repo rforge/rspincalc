@@ -13,4 +13,4 @@ Description: Conversion between attitude representations: DCM, Euler angles, Qua
     Also quaternion and other useful functions.
     Based on SpinCalc by John Fuller and SpinConv by Paolo de Leva.
 License: GPL (>= 3)
-LazyData: yes
+
